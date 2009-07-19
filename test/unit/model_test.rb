@@ -30,8 +30,11 @@ class ModelTest < Test::Unit::TestCase
         </things>
       XML
       
+      EmptyModel.expects(:new).with('<thing><id>1</id></thing>').returns('model_1')
+      EmptyModel.expects(:new).with('<thing><id>2</id></thing>').returns('model_2')
+      
       collection = EmptyModel.collection_from(xml, 'things/thing')
-      collection.should == %w(<thing><id>1</id></thing> <thing><id>2</id></thing>)
+      collection.should == ['model_1', 'model_2']
     end
 
   end

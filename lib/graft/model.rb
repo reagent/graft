@@ -13,7 +13,7 @@ module Graft
       end
 
       def collection_from(xml, node)
-        (Hpricot.XML(xml)/node).map {|n| n.to_s }
+        (Hpricot.XML(xml)/node).map {|n| new n.to_s }
       end
       
     end
