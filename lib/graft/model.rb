@@ -11,6 +11,10 @@ module Graft
         self.attributes << Attribute.new(name, options[:from])
         class_eval "attr_accessor :#{name}"
       end
+
+      def collection_from(xml, node)
+        (Hpricot.XML(xml)/node).map {|n| n.to_s }
+      end
       
     end
     
