@@ -43,6 +43,11 @@ class ModelTest < Test::Unit::TestCase
       collection = EmptyModel.collection_from(xml, 'things/thing')
       collection.should == ['model_1', 'model_2']
     end
+    
+    should "return an empty hash when calling :to_hash" do
+      m = EmptyModel.new
+      m.to_hash.should == {}
+    end
 
   end
   
@@ -50,12 +55,44 @@ class ModelTest < Test::Unit::TestCase
     should "know the names of all its attributes" do
       ModelWithAttributes.attributes.map {|a| a.name.to_s }.should == %w(name description rating size)
     end
+    
+    should "return a hash representation of itself" do
+      m = ModelWithAttributes.new
+      
+      m.name        = 'name'
+      m.description = 'description'
+      m.rating      = '5'
+      m.size        = 'large'
+    
+      m.to_hash.should == {
+        'name'        => 'name',
+        'description' => 'description',
+        'rating'      => '5',
+        'size'        => 'large'
+      }
+
+    end
   end
   
   context "The ModelWithAttributeType class" do
     should "know that it's attribute is of type :integer" do
       attribute = ModelWithAttributeType.attributes.first
       attribute.type_class.should == Graft::Type::Integer
+    end
+    
+    should "be able to generate an XML representation of itself" do
+      
+      m = ModelWithAttributeType.new
+      m.id = 1
+      
+      xml = String.new
+      xml << '<?xml version="1.0" encoding="UTF-8"?>'
+      xml << '<model>'
+      xml << '<id>1</id>'
+      xml << '</model>'
+      
+      m.to_xml('model').should == xml
+      
     end
   end
 

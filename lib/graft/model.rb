@@ -43,6 +43,22 @@ module Graft
         end
       end
       
+      def to_hash
+        self.class.attributes.inject({}) {|h,a| h.merge(a.name.to_s => send(a.name)) }
+      end
+      
+      def to_xml(tag_name)
+        xml = Builder::XmlMarkup.new
+        xml.instruct!
+        xml.tag! tag_name do
+          to_hash.each do |attribute, value|
+            xml.tag! attribute, value
+          end
+        end
+        xml.target!
+      end
+
+      
     end
     
     def self.included(other)
