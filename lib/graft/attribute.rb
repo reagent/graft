@@ -5,11 +5,16 @@ module Graft
 
     attr_reader :name, :sources
 
-    def initialize(name, sources = nil)
+    def initialize(name, type = :string, sources = nil)
       @name = name.to_sym
+      @type = type
 
       @sources = Array(sources)
       @sources << @name.to_s if @sources.empty?
+    end
+    
+    def type_class
+      "Graft::Type::#{@type.to_s.camelize}".constantize
     end
 
     def split(source)
@@ -37,7 +42,8 @@ module Graft
         node = node_for(document, source)
         (node.attributes[attribute(source)] || node.inner_text) unless node.nil?
       end
-      values.compact.first
+      
+      type_class.new(values.compact.first).value
     end
 
   end

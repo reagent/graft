@@ -5,3 +5,33 @@ require 'rubygems'
 require 'throat_punch'
 
 require File.dirname(__FILE__) + '/../lib/graft'
+
+class Test::Unit::TestCase
+  
+  def self.implementation_klass
+    class_name = self.to_s.match(/([a-zA-Z]+)Test$/)[1]
+    klass      = Graft::Type.const_get(class_name)
+    
+    klass
+  end
+  
+  def self.should_convert(source, options)
+    klass  = self.implementation_klass
+    target = options[:to]
+
+    should "be able to convert '#{source}' to #{target}" do
+      o = klass.new(source)
+      o.value.should == target
+    end
+  end
+  
+  def self.should_fail_when_converting(source)
+    klass = self.implementation_klass
+    
+    should "fail when converting '#{source}'" do
+      o = klass.new(source)
+      lambda { o.value }.should raise_error(Graft::Type::ConversionError)
+    end
+  end
+  
+end

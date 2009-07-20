@@ -8,6 +8,11 @@ module Graft
         attr = Attribute.new('foo')
         attr.name.should == :foo
       end
+      
+      should "have a default type class" do
+        attr = Attribute.new('foo')
+        attr.type_class.should == Graft::Type::String
+      end
 
       should "have a default source" do
         attr = Attribute.new(:foo)
@@ -15,7 +20,7 @@ module Graft
       end
       
       should "be able to assign multiple sources" do
-        attr = Attribute.new(:foo, ['foo1', 'foo2'])
+        attr = Attribute.new(:foo, :string, ['foo1', 'foo2'])
         attr.sources.should == ['foo1', 'foo2']
       end
 
@@ -35,7 +40,7 @@ module Graft
       end
       
       should "allow the setting of the location information" do
-        attr = Attribute.new('foo', 'bar')
+        attr = Attribute.new('foo', :string, 'bar')
         attr.sources.should == ['bar']
       end
       
@@ -50,7 +55,7 @@ module Graft
       end
       
       should "use the attribute for the attribute if specified" do
-        attr = Attribute.new(:id, '@nsid')
+        attr = Attribute.new(:id, :string, '@nsid')
         attr.attribute('@nsid').should == 'nsid'
       end
 
@@ -74,7 +79,7 @@ module Graft
         document = Hpricot.XML('<user nsid="1337" />')
         expected = document.at('user')
         
-        attr = Attribute.new(:id, '@nsid')
+        attr = Attribute.new(:id, :string, '@nsid')
         attr.node_for(document, '@nsid').should == expected
       end
       
@@ -92,13 +97,13 @@ module Graft
         
       should "be able to pull a specific attribute value from the current XML node" do
         document = Hpricot.XML('<user nsid="1337" />')
-        attr = Attribute.new(:id, '@nsid')
+        attr = Attribute.new(:id, :string, '@nsid')
         attr.value_from(document).should  == '1337'
       end
 
       should "be able to pull an attribute value for a node and attribute" do
         document = Hpricot.XML('<station><genre slug="dnb">Drum & Bass</genre></station>')
-        attr = Attribute.new(:slug, 'station/genre@slug')
+        attr = Attribute.new(:slug, :string, 'station/genre@slug')
         attr.value_from(document).should == 'dnb'
       end
         
@@ -108,24 +113,45 @@ module Graft
         attr.value_from(document).should == 'blip'
       end
       
-      # should "be able to pull a value from an attribute once it's found a node by another attribute" do
-      #   document = Hpricot.XML('<node type="blip" value="bleep" />')
-      #   attr = Attribute.new(:blip, "node[@type='blip]@value")
-      #   
-      #   attr.value_from(document).should == 'bleep'
-      # end
-
       should "return nil if it cannot find the specified node" do
         document = Hpricot.XML('<user id="1" />')
-        attr = Attribute.new(:photoset, '@nsid')
+        attr = Attribute.new(:photoset, :string, '@nsid')
         attr.value_from(document).should be(nil)
       end
 
       should "be able to try a series of nodes to find a value" do
         document = Hpricot.XML('<photoid>123</photoid>')
 
-        attr = Attribute.new(:id, ['photo@nsid', 'photoid'])
+        attr = Attribute.new(:id, :string, ['photo@nsid', 'photoid'])
         attr.value_from(document).should == '123'
+      end
+      
+      should "be able to convert an integer value" do
+        document = Hpricot.XML('<id>1</id>')
+        
+        attr = Attribute.new(:id, :integer)
+        attr.value_from(document).should == 1
+      end
+      
+      should "be able to convert a boolean value" do
+        document = Hpricot.XML('<active>true</active>')
+        
+        attr = Attribute.new(:active, :boolean)
+        attr.value_from(document).should == true
+      end
+
+      should "be able to convert a date value" do
+        document = Hpricot.XML('<due_on>2009-08-01</due_on>')
+        
+        attr = Attribute.new(:due_on, :date)
+        attr.value_from(document).should == Date.parse('2009-08-01')
+      end
+      
+      should "be able to convert a time value" do
+        document = Hpricot.XML('<created_at>2009-08-01 00:00:00</created_at>')
+        
+        attr = Attribute.new(:created_at, :time)
+        attr.value_from(document).should == Time.parse('2009-08-01 00:00:00')
       end
 
     end

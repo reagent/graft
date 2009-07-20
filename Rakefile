@@ -19,6 +19,7 @@ spec = Gem::Specification.new do |s|
   s.files            = %w(README.rdoc Rakefile) + Dir.glob("{lib,test}/**/*")
   
   s.add_dependency('hpricot', '~> 0.6.0')
+  s.add_dependency('tzinfo', '>= 0.3.12')
   s.add_dependency('activesupport', '~> 2.0')
 end
 

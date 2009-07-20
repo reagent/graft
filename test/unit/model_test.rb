@@ -14,6 +14,13 @@ class ModelWithAttributes
   
 end
 
+class ModelWithAttributeType
+  include Graft::Model
+  
+  attribute :id, :type => :integer
+  
+end
+
 class ModelTest < Test::Unit::TestCase
 
   context "The EmptyModel class" do
@@ -38,10 +45,17 @@ class ModelTest < Test::Unit::TestCase
     end
 
   end
-
+  
   context "The ModelWithAttributes class" do
     should "know the names of all its attributes" do
       ModelWithAttributes.attributes.map {|a| a.name.to_s }.should == %w(name description rating size)
+    end
+  end
+  
+  context "The ModelWithAttributeType class" do
+    should "know that it's attribute is of type :integer" do
+      attribute = ModelWithAttributeType.attributes.first
+      attribute.type_class.should == Graft::Type::Integer
     end
   end
 

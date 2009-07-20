@@ -8,7 +8,10 @@ module Graft
       end
       
       def attribute(name, options = {})
-        self.attributes << Attribute.new(name, options[:from])
+        source = options[:from]
+        type   = options[:type] || :string
+        
+        self.attributes << Attribute.new(name, type, source)
         class_eval "attr_accessor :#{name}"
       end
 
