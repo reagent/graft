@@ -1,5 +1,5 @@
 module Graft
-  class Attribute
+  class XmlAttribute
 
     # TODO: Refactor the location / attribute logic into a Source class
 

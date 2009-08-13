@@ -11,7 +11,7 @@ module Graft
         source = options[:from]
         type   = options[:type] || :string
         
-        self.attributes << Attribute.new(name, type, source)
+        self.attributes << XmlAttribute.new(name, type, source)
         class_eval "attr_accessor :#{name}"
       end
 

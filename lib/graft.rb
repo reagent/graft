@@ -8,6 +8,6 @@ require 'active_support/time_with_zone'
 require 'active_support/inflector'
 
 
-require 'graft/attribute'
+require 'graft/xml_attribute'
 require 'graft/model'
 require 'graft/type'
