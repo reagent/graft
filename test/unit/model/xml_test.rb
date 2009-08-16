@@ -1,11 +1,11 @@
-require File.dirname(__FILE__) + '/../test_helper'
+require File.dirname(__FILE__) + '/../../test_helper'
 
-class EmptyModel
-  include Graft::Model
+class EmptyXmlModel
+  include Graft::Model::Xml
 end
 
-class ModelWithAttributes
-  include Graft::Model
+class XmlModelWithAttributes
+  include Graft::Model::Xml
 
   attribute :name
   attribute :description, :from => 'desc'
@@ -14,18 +14,17 @@ class ModelWithAttributes
   
 end
 
-class ModelWithAttributeType
-  include Graft::Model
+class XmlModelWithAttributeType
+  include Graft::Model::Xml
   
   attribute :id, :type => :integer
-  
 end
 
-class ModelTest < Test::Unit::TestCase
+class XmlModelTest < Test::Unit::TestCase
 
-  context "The EmptyModel class" do
+  context "The EmptyXmlModel class" do
     should "have an empty list of attributes if none are supplied" do
-      EmptyModel.attributes.should == []
+      EmptyXmlModel.attributes.should == []
     end
     
     should "be able to return a collection of XML nodes" do
@@ -37,27 +36,27 @@ class ModelTest < Test::Unit::TestCase
         </things>
       XML
       
-      EmptyModel.expects(:new).with('<thing><id>1</id></thing>').returns('model_1')
-      EmptyModel.expects(:new).with('<thing><id>2</id></thing>').returns('model_2')
+      EmptyXmlModel.expects(:new).with('<thing><id>1</id></thing>').returns('model_1')
+      EmptyXmlModel.expects(:new).with('<thing><id>2</id></thing>').returns('model_2')
       
-      collection = EmptyModel.collection_from(xml, 'things/thing')
+      collection = EmptyXmlModel.collection_from(xml, 'things/thing')
       collection.should == ['model_1', 'model_2']
     end
     
     should "return an empty hash when calling :to_hash" do
-      m = EmptyModel.new
+      m = EmptyXmlModel.new
       m.to_hash.should == {}
     end
 
   end
   
-  context "The ModelWithAttributes class" do
+  context "The XmlModelWithAttributes class" do
     should "know the names of all its attributes" do
-      ModelWithAttributes.attributes.map {|a| a.name.to_s }.should == %w(name description rating size)
+      XmlModelWithAttributes.attributes.map {|a| a.name.to_s }.should == %w(name description rating size)
     end
     
     should "return a hash representation of itself" do
-      m = ModelWithAttributes.new
+      m = XmlModelWithAttributes.new
       
       m.name        = 'name'
       m.description = 'description'
@@ -76,13 +75,13 @@ class ModelTest < Test::Unit::TestCase
   
   context "The ModelWithAttributeType class" do
     should "know that it's attribute is of type :integer" do
-      attribute = ModelWithAttributeType.attributes.first
+      attribute = XmlModelWithAttributeType.attributes.first
       attribute.type_class.should == Graft::Type::Integer
     end
     
     should "be able to generate an XML representation of itself" do
       
-      m = ModelWithAttributeType.new
+      m = XmlModelWithAttributeType.new
       m.id = 1
       
       xml = String.new
@@ -96,26 +95,26 @@ class ModelTest < Test::Unit::TestCase
     end
   end
 
-  context "An instance of the ModelWithAttributes class" do
+  context "An instance of the XmlModelWithAttributes class" do
 
     setup { @simple_xml = '<name>Graft</name>' }
 
     should "have default reader method for :name" do
-      ModelWithAttributes.new.respond_to?(:name).should be(true)
+      XmlModelWithAttributes.new.respond_to?(:name).should be(true)
     end
     
     should "be able to populate its data on initialization" do
       xml = Hpricot.XML(@simple_xml)
-      ModelWithAttributes.new(xml).name.should == 'Graft'
+      XmlModelWithAttributes.new(xml).name.should == 'Graft'
     end
     
     should "have a reference to the original document" do
       xml = Hpricot.XML(@simple_xml)
-      ModelWithAttributes.new(xml).document.should == xml
+      XmlModelWithAttributes.new(xml).document.should == xml
     end
     
     should "be able to populate from an XML string" do
-      ModelWithAttributes.new(@simple_xml).name.should == 'Graft'
+      XmlModelWithAttributes.new(@simple_xml).name.should == 'Graft'
     end
     
     context "when populating data from an XML document" do
@@ -129,7 +128,7 @@ class ModelTest < Test::Unit::TestCase
           <node type="size" value="large" />
         XML
 
-        @model = ModelWithAttributes.new
+        @model = XmlModelWithAttributes.new
         @model.populate_from(Hpricot.XML(xml))
       end
 

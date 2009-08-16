@@ -4,7 +4,8 @@ $:.reject! { |e| e.include? 'TextMate' }
 require 'rubygems'
 require 'throat_punch'
 
-require File.dirname(__FILE__) + '/../lib/graft'
+require File.dirname(__FILE__) + '/../lib/graft/xml'
+require File.dirname(__FILE__) + '/../lib/graft/json'
 
 class Test::Unit::TestCase
   
