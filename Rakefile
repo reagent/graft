@@ -22,6 +22,7 @@ spec = Gem::Specification.new do |s|
   s.add_dependency('tzinfo', '>= 0.3.12')
   s.add_dependency('builder', '>= 2.1.2')
   s.add_dependency('activesupport', '>= 2.0')
+  s.add_dependency('json', '>= 1.1.7')
 end
 
 Rake::GemPackageTask.new(spec) do |pkg|
