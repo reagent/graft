@@ -11,3 +11,9 @@ require 'graft/model'
 require 'graft/xml/type'
 require 'graft/xml/attribute'
 require 'graft/xml/model'
+
+module Graft
+  def self.included(other)
+    other.send(:include, Graft::Xml::Model)
+  end
+end
