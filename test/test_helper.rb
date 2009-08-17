@@ -11,7 +11,7 @@ class Test::Unit::TestCase
   
   def self.implementation_klass
     class_name = self.to_s.match(/([a-zA-Z]+)Test$/)[1]
-    klass      = Graft::Type.const_get(class_name)
+    klass      = Graft::Xml::Type.const_get(class_name)
     
     klass
   end
@@ -31,7 +31,7 @@ class Test::Unit::TestCase
     
     should "fail when converting '#{source}'" do
       o = klass.new(source)
-      lambda { o.value }.should raise_error(Graft::Type::ConversionError)
+      lambda { o.value }.should raise_error(Graft::Xml::Type::ConversionError)
     end
   end
   

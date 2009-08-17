@@ -1,13 +1,13 @@
 module Graft
-  module Model
-    module Json
+  module Json
+    module Model
 
       module ClassMethods
 
         def attribute(name, options = {})
           source = options[:from]
 
-          self.attributes << JsonAttribute.new(name, source)
+          self.attributes << Graft::Json::Attribute.new(name, source)
           class_eval "attr_accessor :#{name}"
         end
 
@@ -23,9 +23,9 @@ module Graft
 
       def self.included(other)
         other.send(:extend, Graft::Model::ClassMethods)
-        other.send(:extend, Graft::Model::Json::ClassMethods)
+        other.send(:extend, Graft::Json::Model::ClassMethods)
         other.send(:include, Graft::Model::InstanceMethods)
-        other.send(:include, Graft::Model::Json::InstanceMethods)
+        other.send(:include, Graft::Json::Model::InstanceMethods)
       end
 
     end

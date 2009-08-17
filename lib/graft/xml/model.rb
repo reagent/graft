@@ -1,6 +1,6 @@
 module Graft
-  module Model
-    module Xml
+  module Xml
+    module Model
 
       module ClassMethods
 
@@ -8,7 +8,7 @@ module Graft
           source = options[:from]
           type   = options[:type] || :string
 
-          self.attributes << XmlAttribute.new(name, type, source)
+          self.attributes << Graft::Xml::Attribute.new(name, type, source)
           class_eval "attr_accessor :#{name}"
         end
 
@@ -53,9 +53,9 @@ module Graft
 
       def self.included(other)
         other.send(:extend, Graft::Model::ClassMethods)
-        other.send(:extend, Graft::Model::Xml::ClassMethods)
+        other.send(:extend, Graft::Xml::Model::ClassMethods)
         other.send(:include, Graft::Model::InstanceMethods)
-        other.send(:include, Graft::Model::Xml::InstanceMethods)
+        other.send(:include, Graft::Xml::Model::InstanceMethods)
       end
 
     end

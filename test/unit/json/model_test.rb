@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class EmptyJsonModel
-  include Graft::Model::Json
+  include Graft::Json::Model
 end
 
 class JsonModelWithAttributes
-  include Graft::Model::Json
+  include Graft::Json::Model
 
   attribute :name
   attribute :description, :from => 'desc'

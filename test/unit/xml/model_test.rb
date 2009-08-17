@@ -1,11 +1,11 @@
 require File.dirname(__FILE__) + '/../../test_helper'
 
 class EmptyXmlModel
-  include Graft::Model::Xml
+  include Graft::Xml::Model
 end
 
 class XmlModelWithAttributes
-  include Graft::Model::Xml
+  include Graft::Xml::Model
 
   attribute :name
   attribute :description, :from => 'desc'
@@ -15,7 +15,7 @@ class XmlModelWithAttributes
 end
 
 class XmlModelWithAttributeType
-  include Graft::Model::Xml
+  include Graft::Xml::Model
   
   attribute :id, :type => :integer
 end
@@ -76,7 +76,7 @@ class XmlModelTest < Test::Unit::TestCase
   context "The ModelWithAttributeType class" do
     should "know that it's attribute is of type :integer" do
       attribute = XmlModelWithAttributeType.attributes.first
-      attribute.type_class.should == Graft::Type::Integer
+      attribute.type_class.should == Graft::Xml::Type::Integer
     end
     
     should "be able to generate an XML representation of itself" do
