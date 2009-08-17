@@ -13,25 +13,16 @@ module Graft
         end
 
         def collection_from(xml, node)
-          (Hpricot.XML(xml)/node).map {|n| new n.to_s }
+          (data_from(xml)/node).map {|n| new n }
+        end
+        
+        def data_from(xml_or_document)
+          xml_or_document.is_a?(String) ? Hpricot.XML(xml_or_document) : xml_or_document
         end
 
       end
 
       module InstanceMethods
-
-        def initialize(document = nil)
-          self.document = document
-          self.populate_from(self.document) unless self.document.nil?
-        end
-
-        def document=(document)
-          @document = document.is_a?(String) ? Hpricot.XML(document) : document
-        end
-
-        def document
-          @document
-        end
 
         def to_hash
           self.class.attributes.inject({}) {|h,a| h.merge(a.name.to_s => send(a.name)) }
@@ -47,7 +38,6 @@ module Graft
           end
           xml.target!
         end
-
 
       end
 

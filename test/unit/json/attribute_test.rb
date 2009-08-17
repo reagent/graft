@@ -22,6 +22,20 @@ module Graft
           attr = Graft::Json::Attribute.new(:first_name)
           attr.value_from(data).should == 'Richerd'
         end
+        
+        should "be able to extract a value from a hash" do
+          data = {'first_name' => 'Richerd'}
+          
+          attr = Graft::Json::Attribute.new(:first_name)
+          attr.value_from(data).should == 'Richerd'
+        end
+        
+        should "be able to extract a value from a hash when provided with a symbol for the source" do
+          data = '{"firstname":"Richerd"}'
+          
+          attr = Graft::Json::Attribute.new(:first_name, :firstname)
+          attr.value_from(data).should == 'Richerd'
+        end
 
         should "be able to extract a nested value from a JSON string" do
           data = '{ "user": {"first_name": "Richerd"} }'

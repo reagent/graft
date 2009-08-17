@@ -36,44 +36,38 @@ class XmlModelTest < Test::Unit::TestCase
         </things>
       XML
       
-      EmptyXmlModel.expects(:new).with('<thing><id>1</id></thing>').returns('model_1')
-      EmptyXmlModel.expects(:new).with('<thing><id>2</id></thing>').returns('model_2')
+      document = Hpricot.XML(xml)
+      
+      EmptyXmlModel.expects(:data_from).with(xml).returns(document)
+      
+      EmptyXmlModel.expects(:new).with((document/'things/thing').first).returns('model_1')
+      EmptyXmlModel.expects(:new).with((document/'things/thing').last).returns('model_2')
       
       collection = EmptyXmlModel.collection_from(xml, 'things/thing')
       collection.should == ['model_1', 'model_2']
     end
-    
-    should "return an empty hash when calling :to_hash" do
-      m = EmptyXmlModel.new
-      m.to_hash.should == {}
-    end
 
+    should "be able to retrieve data from the source XML string" do
+      xml = '<name>Graft</name>'
+      Hpricot.expects(:XML).with(xml).returns('document')
+
+      EmptyXmlModel.data_from(xml).should == 'document'
+    end
+    
+    should "be able to retrieve data from the source document data" do
+      document = Hpricot.XML('<name>Graft</name>')
+      EmptyXmlModel.data_from(document).should == document
+    end
+    
   end
   
   context "The XmlModelWithAttributes class" do
     should "know the names of all its attributes" do
       XmlModelWithAttributes.attributes.map {|a| a.name.to_s }.should == %w(name description rating size)
     end
-    
-    should "return a hash representation of itself" do
-      m = XmlModelWithAttributes.new
-      
-      m.name        = 'name'
-      m.description = 'description'
-      m.rating      = '5'
-      m.size        = 'large'
-    
-      m.to_hash.should == {
-        'name'        => 'name',
-        'description' => 'description',
-        'rating'      => '5',
-        'size'        => 'large'
-      }
-
-    end
   end
   
-  context "The ModelWithAttributeType class" do
+  context "The XmlModelWithAttributeType class" do
     should "know that it's attribute is of type :integer" do
       attribute = XmlModelWithAttributeType.attributes.first
       attribute.type_class.should == Graft::Xml::Type::Integer
@@ -95,6 +89,15 @@ class XmlModelTest < Test::Unit::TestCase
     end
   end
 
+  context "An instance of the EmptyXmlModel class" do
+    
+    should "return an empty hash when calling :to_hash" do
+      m = EmptyXmlModel.new
+      m.to_hash.should == {}
+    end
+    
+  end
+
   context "An instance of the XmlModelWithAttributes class" do
 
     setup { @simple_xml = '<name>Graft</name>' }
@@ -110,11 +113,27 @@ class XmlModelTest < Test::Unit::TestCase
     
     should "have a reference to the original document" do
       xml = Hpricot.XML(@simple_xml)
-      XmlModelWithAttributes.new(xml).document.should == xml
+      XmlModelWithAttributes.new(xml).source_data.should == xml
     end
     
     should "be able to populate from an XML string" do
       XmlModelWithAttributes.new(@simple_xml).name.should == 'Graft'
+    end
+    
+    should "return a hash representation of itself" do
+      m = XmlModelWithAttributes.new
+      
+      m.name        = 'name'
+      m.description = 'description'
+      m.rating      = '5'
+      m.size        = 'large'
+    
+      m.to_hash.should == {
+        'name'        => 'name',
+        'description' => 'description',
+        'rating'      => '5',
+        'size'        => 'large'
+      }
     end
     
     context "when populating data from an XML document" do
