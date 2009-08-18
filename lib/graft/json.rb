@@ -1,6 +1,7 @@
 $:.unshift File.dirname(__FILE__) + '/..'
 
 require 'json'
+require 'graft/core_ext/hash'
 
 require 'graft/model'
 require 'graft/json/attribute'

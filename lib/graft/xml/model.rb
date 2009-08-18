@@ -12,10 +12,6 @@ module Graft
           class_eval "attr_accessor :#{name}"
         end
 
-        def collection_from(xml, node)
-          (data_from(xml)/node).map {|n| new n }
-        end
-        
         def data_from(xml_or_document)
           xml_or_document.is_a?(String) ? Hpricot.XML(xml_or_document) : xml_or_document
         end

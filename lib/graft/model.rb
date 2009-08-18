@@ -5,6 +5,10 @@ module Graft
       def attributes
         @attributes ||= []
       end
+      
+      def collection_from(data_source, node)
+        (data_from(data_source)/node).map {|n| new n }
+      end
     end
 
     module InstanceMethods
@@ -24,7 +28,7 @@ module Graft
       
       def populate_from(data_source)
         self.class.attributes.each do |attribute|
-          value = attribute.value_from(data_source)
+          value = attribute.value_from(self.class.data_from(data_source))
           self.send("#{attribute.name}=".to_sym, value) unless value.nil?
         end
       end

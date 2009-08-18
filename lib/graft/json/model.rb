@@ -11,10 +11,6 @@ module Graft
           class_eval "attr_accessor :#{name}"
         end
         
-        def collection_from(json_or_hash, path)
-          data_from(json_or_hash)[path].map {|e| new(e) }
-        end
-
         def data_from(json_or_hash)
           json_or_hash.is_a?(String) ? JSON.parse(json_or_hash) : json_or_hash
         end
