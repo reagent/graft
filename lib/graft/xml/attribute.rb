@@ -41,7 +41,10 @@ module Graft
       def value_from(document)
         values = sources.map do |source|
           node = node_for(document, source)
-          (node.attributes[attribute(source)] || node.inner_text) unless node.nil?
+          if !node.nil?
+            possible_values = [node.attributes[attribute(source)], node.inner_text]
+            possible_values.detect {|value| !value.blank? }
+          end
         end
 
         type_class.new(values.compact.first).value
