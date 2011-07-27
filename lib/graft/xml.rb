@@ -7,7 +7,7 @@ require 'tzinfo'
 begin
   # ActiveSupport < 2.3.5
   require 'active_support/core_ext/blank'
-rescue NameError
+rescue LoadError, NameError
   # ActiveSupport >= 2.3.5 will raise a NameError exception
   require 'active_support/core_ext/object/blank'
 end
